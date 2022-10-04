@@ -24,9 +24,9 @@ Define the function "orb" which implements boolean _disjunction_, i.e. boolean O
 Prove the correctness of your function by exhaustive testing using "example:" and "refl"! 
 -/
 -- ANSWER:
-def orb : bool -> bool -> bool 
- | ff ff := ff
- | _ _ := tt
+def orb : bool → bool → bool
+  | ff x := x
+  | tt _ := tt
 
 example: orb ff ff = ff := begin refl, end 
 example: orb ff tt = tt := begin refl, end 
@@ -42,10 +42,9 @@ Define the function "xorb" which implements boolean _exclusive or_, XOR (result 
     3. Prove the property in 2. by exhaustive testing, using "example:" and "refl". 
 -/
 -- ANSWER:
-def xorb : bool -> bool -> bool 
- | ff ff := ff
- | tt tt := ff
- | _ _ := tt
+def xorb : bool → bool → bool
+  | ff x := x
+  | tt x := not x
 
 -- 1. 
 example: xorb ff ff = ff := begin refl, end 

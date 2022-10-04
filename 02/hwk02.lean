@@ -51,23 +51,24 @@ Evaluate your function on a number of examples using #eval.
 Make sure you can write down the type of multiply without help from LEAN. 
 -/
 -- ANSWER:
-def multiply ...
+def multiply (x y : ℕ ) : ℕ := x * y
 #eval multiply 0 3
 #eval multiply 13 5
-...
-
+#eval multiply 1 5
+#eval multiply 1 2
+#eval multiply 0 25
 
 /- HWK02-02:
 Define the function "divide" which takes two natural numbers x and y, and divides them, returning x/y. The result should be an integer number. If y=0 your function should return -1. Otherwise it should return x/y rounded down, so that (divide 3 2) for example should return 1 and (divide 2 3) should return 0. You can use LEAN's predefined "/" operator in your definition. 
 Evaluate your function on a number of examples.
 -/
 -- ANSWER:
-def divide ...
+def divide (x y : ℕ ) : ℤ := x / y
 #eval divide 3 1
 #eval divide 3 2
 #eval divide 2 3
 #eval divide 3 0
-...
+
 
 
 /- HWK02-03:
@@ -78,12 +79,13 @@ CHALLENGE: try to do it without if-then-else, using pattern matching only (recur
 Evaluate your function on a number of examples.
 -/
 -- ANSWER:
-def diff_by_one ...
+def diff_by_one (x y : ℕ ) : bool
+  := if (x=y+1) then ( tt ) else if (y = x+1) then (tt) else (ff)
 #eval diff_by_one 3 1
 #eval diff_by_one 3 2
 #eval diff_by_one 3 5
 #eval diff_by_one 3 4
-... 
+.
 
 
 /- HWK02-04-1:
@@ -91,32 +93,35 @@ Write down in the place of "..." the type of the function given below.
 NOTE: THINK and come up with the answer yourself, without using #check. Then you can confirm your answer using #check. In the exams you may not have access to LEAN. You will be expected to be able to read LEAN code and come up with the types of functions "manually".
 -/
 def f (b : bool) (x : nat) := if (b = tt) then (x:int) else (-x:int)
+
 -- ANSWER:
--- The type of f is ... 
+-- The type of f is 
+
+-- bool → ℕ → ℤ 
 
 /- HWK02-04-2:
 Write the same function as f above, but as an anonymous (lambda) function. f and your anonymous definition of it must be equivalent, meaning they should have the same type and also return the same result, for every input. 
 -/
-#check fun ... 
+#check fun (b : bool) (x : nat), if (b = tt) then (x:int) else (-x:int)
 
 
 
 /- HWK02-05:
 For each of the expressions below, write in the place of "..." whether the expression is well-typed or not, i.e., whether it results in a type error. f is the function defined right above.
 NOTE: THINK and come up with the answer yourself, without using LEAN. Then you can confirm your answer using LEAN. In the exams you may not have access to LEAN. You will be expected to be able to read LEAN code and come up with the answer to questions like this "manually".
- f 0 tt           -- ... 
- f tt 0           -- ... 
- f 0              -- ... 
- f tt             -- ... 
- f (0 tt)         -- ... 
- (f 0) tt         -- ... 
- (f 0 tt)         -- ... 
- ((f) (0) (tt))   -- ... 
- (f 0) (tt)       -- ... 
- f (f 10 tt) tt   -- ... 
- f (f 10 ff) tt   -- ... 
- (f 10 tt) + 1    -- ... 
- (f 10 ff) + 1    -- ... 
+ f 0 tt           -- type error 
+ f tt 0           -- well-typed 
+ f 0              -- type error  
+ f tt             -- well-typed  
+ f (0 tt)         -- type error 
+ (f 0) tt         -- type error  
+ (f 0 tt)         -- type error  
+ ((f) (0) (tt))   -- type error
+ (f 0) (tt)       -- type error
+ f (f 10 tt) tt   -- type error 
+ f (f 10 ff) tt   -- type error 
+ (f 10 tt) + 1    -- type error
+ (f 10 ff) + 1    -- type error
 -/
 
 
@@ -125,21 +130,28 @@ NOTE: THINK and come up with the answer yourself, without using LEAN. Then you c
 Redefine the function f from HWK02-04 using pattern-matching. Call the new function fg. fg should be equivalent to f, meaning that (1) it should have the same type as f, and (2) for every input, both f and fg should return exactly the same output. 
 -/
 -- ANSWER:
-... 
+def fg: bool → ℕ → ℤ
+  | tt x := (x:int)
+  | ff x := (-x:int)
 
 
 /- HWK02-07:
 Define the function "factorial" which takes a nat x and computes x!, the factorial of x. Recall that x! = x * (x-1) * ... * 1 if x>0 and that 0! = 0. Define the function "from scratch" using only addition, multiplication and recursion (no other predefined LEAN operations).  
 -/
 -- ANSWER:
-... 
+def factorial : ℕ → ℕ 
+  | 0 := 0
+  | (x + 1) := (x + 1) * factorial x
 
 
 /- HWK02-08:
 Define the function "fib" which takes as input a nat n and returns as output the n-th Fibonacci number. Recall that the Fibonacci sequence is: 0, 1, 1, 2, 3, 5, 8, 13, ..., and that each number in the sequence is obtained by adding the previous two numbers in the sequence. So, (fib 0) = 0, (fib 1) = 1, (fib 2) = 1, (fib 3) = 2, etc. 
 -/
 -- ANSWER:
-...
+def fib : ℕ → ℕ 
+  | 0 := 0
+  | 1 := 1
+  | (x + 2) := fib(x + 1) + fib(x)
 
 
 /- HWK02-09:
@@ -155,7 +167,11 @@ independently of the answers you gave in the two questions above, use the transf
 -/
 -- ANSWER:
 
-... 
+def sumallintbounded : int -> ℕ -> int  
+  | 0 _ := 0
+  | n 0 := n
+  | (n ) (bound + 1) := (n + 1 ) + (sumallintbounded n bound)
+
 
 
 
@@ -164,7 +180,7 @@ Define the function "compose" that takes as input two functions f : ℕ → bool
 Make sure you can write down the type of compose without help from LEAN. 
 -/
 -- ANSWER:
-def compose ... 
+def compose (f: ℕ -> bool ) (g: bool -> ℤ ) : (ℕ -> ℤ ) := fun (x : ℕ ), g (f x)
 
 
 
@@ -172,7 +188,9 @@ def compose ...
 Define the function "genzeros" which takes a nat n and returns a list of n zeros. For example, (genzeros 3) should return [0,0,0] and (genzeros 0) should return [].
 -/
 -- ANSWER:
-def genzeros ... 
+def genzeros: ℕ -> list ℕ 
+  | 0 := []
+  | ( n + 1) := 0 :: (genzeros (n))
 
 #eval genzeros 0
 #eval genzeros 3
@@ -184,7 +202,16 @@ def genzeros ...
 Define the function "app" which takes as input two lists of nats and concatenates them, that is, appends the second after the first one. For example (app [1,2,3] [3,4,5]) should return [1,2,3,3,4,5]. Define the function recursively, and not using LEAN's library function "append".  
 -/
 -- ANSWER:
-def app  ... 
+def app : list ℕ -> list ℕ -> list ℕ  
+  | [] [] := list.nil
+  | x [] := x
+  | [] y := y
+  | (a :: L) y:= a :: (app L y)
+
+#eval (app [1, 2, 3][])
+#eval app [1, 2, 3][4]
+#eval app [][]
+
   
   
 
@@ -198,19 +225,32 @@ Then define the function "apply2int" which is the same as "apply", except that i
 -/
 -- ANSWER:
 
-def apply : ...
+def apply : list ℕ -> (ℕ -> ℕ ) -> list ℕ
+  | [] _:= list.nil 
+  | (x :: L) f := (f x) :: (apply L f)
 
-#eval apply [] ...
-#eval apply [] ...
-#eval apply [] ...
+#eval apply [] (fun (x), x)
+#eval apply [] (fun (x), 2*x)
+#eval apply [] (fun (x), 0 - x)
 
-#eval apply [0,1,2,3] ...
-#eval apply [0,1,2,3] ...
-#eval apply [0,1,2,3] ...
+#eval apply [0,1,2,3] (fun (x), x)
+#eval apply [0,1,2,3] (fun (x), 2*x)
+#eval apply [0,1,2,3] (fun (x), 0 - x)
 
-def apply2int : ... 
+def apply2int : list ℕ -> (ℕ -> ℤ ) -> list ℤ
+| [] _:= list.nil 
+  | (x :: L) f2 := (f2 x) :: (apply2int L f2)
 
-#eval apply2int [0,1,2,3] ...    -- result should be [0, -1, -2, -3]
+
+#eval apply2int [] (fun (x), x)
+#eval apply2int [] (fun (x), 2*x)
+#eval apply2int [] (fun (x), 0)
+
+#eval apply2int [0,1,2,3] (fun (x), x)
+#eval apply2int [0,1,2,3] (fun (x), 2*x)
+
+
+#eval apply2int [0,1,2,3] (fun (x), 0 - x)  -- result should be [0, -1, -2, -3]
 
 
 
@@ -224,10 +264,13 @@ Evaluate your function on the examples given below:
 -/
 -- ANSWER:
 
-def serialcompo ... 
+def serialcompo: list (ℕ -> ℕ ) -> (ℕ -> ℕ ) 
+  | [] := (λ x : nat, x)
+  | (n :: L) := (fun x: ℕ ,  (n(serialcompo L x))
 
 #eval serialcompo [] 123 
 #eval serialcompo [fib] 10 
 #eval serialcompo [nat.mul 2, nat.add 0, fib] 10
 
+-- f2 o f3 (nat.mul n) 
 
