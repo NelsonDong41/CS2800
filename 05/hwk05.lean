@@ -76,21 +76,39 @@ you WILL be penalized if the formula that you gave in D is NOT equivalent to the
 for your proofs with bools, use the boolean implication function "bimp" provided below:
 -/
 
-theorem bump: ∀ p q r : Prop, (p -> q) ∨ r ↔ ¬ p ∨ q ∨ r
+theorem bump: ∀ p q r : Prop, ((p -> q) ∨ r) ↔ ((¬ q → ¬ p) ∨ r)
 := begin
-    intros, 
+    intro p, 
+    intro q,
+    intro r,
     split,
     {
         intros h,
-        have h2: true := h p q r,
-        
+        cases h with h1 h2,
+        {
+            left,
+            intros h3,
+            refl,
+            
+        },
+        {
+            right,
+            assumption
+        }
 
-
-
-        
     },
     {
-
+        intros h,
+        cases h with h1 h2,
+        {
+            left,
+            intros h2,
+            sorry,
+        },
+        {
+            right,
+            assumption
+        }
     }
 end
 
@@ -182,7 +200,7 @@ Do the above A,B,C,D,E steps for each of the following formulas:
 
 /- 4. (p → (q ∧ r)) ∧ (r → ¬q)  is ... 
 -/
-... 
+ 
 
 
 
@@ -249,7 +267,8 @@ theorem next_workday_is_a_5day_weekday: ∀ d : weekday,
     next_workday d = friday 
 := begin
 -- ANSWER:
- ... 
+    intros,
+
 end
 
 
@@ -261,7 +280,15 @@ theorem next_workday_not_weekend:
     ∀ d : weekday, next_workday d ≠ sunday ∧ next_workday d ≠ saturday 
 := begin
 -- ANSWER:
-   ... 
+   intros,
+   cases d,
+   repeat{
+        split,
+        repeat {
+            rw next_workday,
+            contradiction
+        }
+   }
 end
 
 
@@ -271,7 +298,22 @@ is the theorem below true? if so prove it, if not, exhibit a counterexample:
 -/
 theorem p_or_p: ∀ P : Prop, (P ∨ P) ↔ P 
 -- ANSWER:
-... 
+:= begin
+    intros,
+    split,
+    {
+        intros h,
+        cases h,
+        repeat {
+            assumption
+        }
+    },
+    {
+        intros h,
+        left,
+        assumption
+    }
+end
 
 
 
@@ -280,7 +322,24 @@ is the theorem below true? if so prove it, if not, exhibit a counterexample:
 -/
 theorem p_and_p: ∀ P : Prop, (P ∧ P) ↔ P 
 -- ANSWER:
-... 
+:= begin
+    intros,
+    split,
+    {
+        intros h,
+        cases h,
+        {
+            assumption
+        }
+    },
+    {
+        intros h,
+        split,
+        repeat {
+            assumption
+        }
+    }
+end
 
 
 
@@ -289,7 +348,22 @@ is the theorem below true? if so prove it, if not, exhibit a counterexample:
 -/
 theorem or_commut: ∀ P Q : Prop, (P ∨ Q) ↔ (Q ∨ P) 
 -- ANSWER:
-... 
+:= begin
+    intros,
+    split,
+    repeat {
+        intro h,
+        cases h,
+        {
+            right,
+            assumption
+        },
+        {
+            left,
+            assumption
+        }
+    }
+end
 
 
 
@@ -299,7 +373,27 @@ is the theorem below true? if so prove it, if not, exhibit a counterexample:
 -/
 theorem iff_commut: ∀ P Q : Prop, (P ↔ Q) ↔ (Q ↔ P) 
 -- ANSWER:
-... 
+:= begin
+    intros,
+    split,
+    repeat {
+        intros h,
+        split,
+        {
+            intro h1,
+            cases h with h2 h3,
+            {
+                have h4 := h3 h1,
+                assumption
+            },
+        },
+        {
+            intro h1,
+            rw h at h1,
+            assumption
+        }
+    }
+end
 
 
 
@@ -308,7 +402,52 @@ is the theorem below true? if so prove it, if not, exhibit a counterexample:
 -/
 theorem or_associat: ∀ A B C : Prop, A ∨ (B ∨ C) ↔ (A ∨ B) ∨ C
 -- ANSWER:
-... 
+:= begin
+    intros,
+    split,
+    {
+        intro h,
+        cases h,
+        {
+            left,
+            left,
+            assumption
+        },
+        {
+            cases h,
+            {
+                left,
+                right,
+                assumption
+            },
+            {
+                right,
+                assumption
+            }
+        }
+    },
+    {
+        intro h,
+        cases h,
+        {
+            cases h,
+            {
+                left,
+                assumption
+            },
+            {
+                right,
+                left,
+                assumption
+            }
+        },
+        {
+            right,
+            right,
+            assumption,
+        }
+    }
+end
 
 
 
@@ -318,8 +457,57 @@ theorem or_associat: ∀ A B C : Prop, A ∨ (B ∨ C) ↔ (A ∨ B) ∨ C
 is the theorem below true? if so prove it, if not, exhibit a counterexample:
 -/
 theorem or_distrib_and: ∀ A B C : Prop, A ∨ (B ∧ C) ↔ (A ∨ B) ∧ (A ∨ C)
--- ANSWER:
-... 
+-- ANSWER: This theorem is true.
+:= begin
+    intros,
+    split,
+    {
+        intro h,
+        cases h,
+        {
+            split,
+            repeat {
+                left,
+                assumption,
+            },
+        },
+        {
+            split,
+            repeat {
+                cases h,
+                {
+                    right,
+                    assumption,
+                }
+            }
+        }
+    },
+    {
+        intro h,
+        cases h with h1 h2,
+        {
+            cases h1,
+            {
+                left,
+                assumption,
+            },
+            {
+                cases h2,
+                {
+                    left,
+                    assumption,
+                },
+                {
+                    right,
+                    split,
+                    repeat {
+                        assumption,
+                    }
+                }
+            }
+        },
+    }
+end
 
 
 
@@ -328,7 +516,28 @@ is the theorem below true? if so prove it, if not, exhibit a counterexample:
 -/
 theorem and_absorb_or: ∀ P Q : Prop, P ∧ (P ∨ Q) ↔ P 
 -- ANSWER:
-... 
+:= begin
+    intros,
+    split,
+    {
+        intro h,
+        cases h,
+        {
+            assumption,
+        }
+    },
+    {
+        intros h,
+        split,
+        {
+            assumption
+        },
+        {
+            left,
+            assumption
+        }
+    }
+end
 
 
 /- HWK05-12:
@@ -343,7 +552,8 @@ prove that 0 < 2 by using the "have" tactic to call lemma nat.zero_lt_succ
 example: 0 < 2  
 := begin
 -- ANSWER:
-    ... 
+    have h := nat.zero_lt_succ 1,
+    assumption,
 end
 
 
@@ -378,13 +588,18 @@ def fsrt123: list ℕ → list ℕ := λ L, [1,2,3]
 theorem fsrtempty_sorted: ∀ L : list ℕ, sorted (fsrtempty L) = tt  
 := begin
 -- ANSWER:
-... 
+    intros,
+    rw fsrtempty,
+    rw sorted
 end
 
 theorem fsrt123_sorted: ∀ L : list ℕ, sorted (fsrt123 L) = tt  
 := begin
 -- ANSWER:
-  ... 
+    intros,
+    rw fsrt123,
+    dunfold sorted,
+    refl,
 end
 
 /- HWK05-13-2:
@@ -395,7 +610,9 @@ define a function occurno : ℕ → list ℕ → ℕ  which takes a nat x and a 
 
 -- ANSWER:
 def occurno : ℕ → list ℕ → ℕ  
-  ... 
+  | _ [] := 0
+  | x (y :: L) := ite (x = y) (1 + occurno x L) (occurno x L)
+
 
 -- DO NOT DELETE:
 example: occurno 0 [] = 0 := begin refl, end 
@@ -414,7 +631,7 @@ define a function permutation : list ℕ → list ℕ → Prop which takes two l
 
 -- ANSWER:
 def permutation (L1 L2 : list ℕ) : Prop := 
-  ... 
+  ∀ x, occurno x L1 = occurno x L2
 
 #check permutation 
 
@@ -434,7 +651,7 @@ def isort : list ℕ → list ℕ
 --
 
 -- ANSWER:
-theorem isort_correct: ... 
+theorem isort_correct: ∀ L1 L2 : list ℕ, (permutation (isort L1) L2) = true
 := begin
     -- do not delete! 
     intro,
@@ -462,7 +679,7 @@ prove the lemma plusind0:
 lemma plusind0: plus 0 0 = 0 
 := begin 
 -- ANSWER:
-   ... 
+   refl, 
 end
 
 /- HWK05-14-2: 
@@ -471,7 +688,9 @@ prove the lemma plusind1:
 lemma plusind1: ∀ (x : ℕ), plus x 0 = x → plus (nat.succ x) 0 = nat.succ x
 := begin
 -- ANSWER:
-    ... 
+    intros h1 h2,
+    rw plus,
+    rw h2,
 end
 
 /-
@@ -491,7 +710,9 @@ use the above three lemmas, and the "have" tactic, in order to prove the theorem
 theorem plus_x_0: ∀ x : ℕ, plus x 0 = x 
 := begin
 -- ANSWER:
-    ... 
+    intros h,
+    have h1 := plusind2 plusind0 plusind1,
+    rw h1,
 end
 
 
