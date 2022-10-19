@@ -200,7 +200,90 @@ Do the above A,B,C,D,E steps for each of the following formulas:
 
 /- 4. (p → (q ∧ r)) ∧ (r → ¬q)  is ... 
 -/
- 
+
+
+A.
+/-
+p   q   r   q ∧ r   p → (q ∧ r)     r → ¬q      (p → (q ∧ r)) ∧ (r → ¬q)
+t   t   t   t       t               f           f
+t   t   f   f       f               t           f
+t   f   t   f       f               t           f
+t   f   f   f       f               t           f
+f   t   t   t       t               f           f
+f   t   f   f       t               t           t
+f   f   t   f       t               t           t
+f   f   f   f       t               t           t
+-/
+
+B.
+-- satisfiable and falsifiable
+
+C. 
+-- 3
+
+D. 
+-- ¬p ∨ (q ∧ r) ∧ (¬r ∨ ¬q)
+
+
+E.
+theorem bump5 : ∀ p q r : Prop, (p → (q ∧ r)) ∧ (r → ¬q) ↔ ¬p ∨ (q ∧ r) ∧ (¬r ∨ ¬q)
+:= begin
+    intros,
+    split,
+    {
+        intros h,
+        cases h with hL hR,
+        {
+            right,
+            split,
+            {
+                split,
+                repeat {
+                    sorry,
+                }
+            },
+            {
+                left,
+                sorry,
+            }
+        },
+    },
+    {
+        intros h,
+        cases h with hL hR,
+        repeat {
+            split,
+            repeat {
+                intros h2,
+                sorry,
+            }
+        },
+        
+    }
+end
+
+theorem bump5bool : ∀ p q r : bool, (bimp p (q && r)) && (bimp r (bnot q)) = ((bnot p) || (q && r)) && ((bnot r) || (bnot q))
+:= begin
+    intros,
+    dunfold bimp,
+    cases p,
+    repeat {
+        cases q,
+        {
+            cases r,
+            repeat {
+                refl,
+            }
+        },
+        {
+            cases r,
+            repeat {
+                refl,
+            },
+        }
+    },
+end
+
 
 
 
