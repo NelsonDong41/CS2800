@@ -268,15 +268,15 @@ theorem not_p_and_not_p_bis: ∀ P : Prop, ¬ (P ∧ ¬P)
     -- have h3 : false := modus_ponens_with_implications P false h1 h2,
     /- to see what's going on in the above line, remove the ": false" part, and observe what happens as you start with just this: -/
 
-    -- have h3 := modus_ponens_with_implications,
+    have h3 := modus_ponens_with_implications,
 
     -- and then keep adding arguments one by one to modus_ponens_with_implications:
 
-    -- have h3 := modus_ponens_with_implications P,
+    have h3 := modus_ponens_with_implications P,
 
-    -- have h3 := modus_ponens_with_implications P false,
+    have h3 := modus_ponens_with_implications P false,
 
-    -- have h3 := modus_ponens_with_implications P false h1, 
+    have h3 := modus_ponens_with_implications P false h1, 
 
     have h3 := modus_ponens_with_implications P false h1 h2,
     

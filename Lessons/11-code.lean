@@ -1,7 +1,7 @@
 -- CS 2800 LOGIC AND COMPUTATION, FALL 2022
 -- COPYRIGHT 2022 STAVROS TRIPAKIS -- DO NOT DISTRIBUTE!
 
-import .ourlibrary11 
+import .ourlibrary11
 
 /-
 Ungraded, anonymous survey on canvas:

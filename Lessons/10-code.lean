@@ -283,7 +283,7 @@ example: ∀ x : ℕ, ¬ (x ≠ 0) → x = 0
 := begin
   intro,
   intro h1,
-  have h2 := classical.by_contradiction h1,
+  have h2 := classical.by_contradiction h1, 
   assumption,
 end
 

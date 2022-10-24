@@ -578,34 +578,19 @@ lemma deMorgan3: ∀ (p q : Prop), ¬ (p ∨ q) → (¬ p ∧ ¬ q)
 := begin
 -- ANSWER:
   intros p q h,
-  have h1 := classical.em (¬ p ∧ ¬ q),
-  cases h1, {
-    split, {
-      cases h1, {
-        trivial,
-      }
-    },
-    {
-      cases h1, {
-        trivial,
-      }
-    }
-  },
-  {
-    dunfold not at h1,
-    dunfold not,
-  }
+  
   
 end
 
-theorem disjunction_right: ∀ P Q : Prop, Q → (P ∨ Q) 
+theorem p_and_q_implies_p: ∀ p q : Prop, (p ∧ q) → p 
 := begin
     intro,
     intro,
-    intro,
-    right,      -- we choose to prove the right part of the disjunction
+    intro h,
+    cases h with h1 h2,
     assumption,
 end
+
 
 theorem modus_ponens: ∀ P Q : Prop, ((P → Q) ∧ P) → Q 
 := begin
@@ -620,6 +605,55 @@ theorem modus_ponens: ∀ P Q : Prop, ((P → Q) ∧ P) → Q
     assumption,
 end
 
+lemma deMorgan3b: ∀ (p q : Prop), ¬ (p ∨ q) → (¬ p ∧ ¬ q) 
+:= begin
+-- ANSWER:
+  intros p q h,
+  split,
+  {
+    dunfold not,
+    have h2 := classical.em (¬ (p ∨ q) → (¬ p ∧ ¬ q)),
+    cases h2, {
+      dunfold not at h2,
+      dunfold not at h,
+      have h3 := h2 h,
+      cases h3, {
+        trivial,
+      }
+    }, {
+      dunfold not at h2,
+      dunfold not at h,
+    }
+    
+    
+  },
+  {
+
+  }
+  
+end
+
+theorem disjunction_right: ∀ P Q : Prop, Q → (P ∨ Q) 
+:= begin
+    intro,
+    intro,
+    intro,
+    right,      -- we choose to prove the right part of the disjunction
+    assumption,
+end
+
+
+theorem modus_ponens_with_implications: ∀ P Q : Prop, P → ((P → Q) → Q) 
+:= begin
+    intro, 
+    intro,
+    intro h1, 
+    intro h2,   
+    have h3 := h2 h1,  -- the type Q of H3 can be omitted 
+    assumption,
+end
+
+
 lemma deMorgan4: ∀ (p q : Prop), ¬ (p ∧ q) → (¬ p ∨ ¬ q) 
 := begin
 -- ANSWER:
@@ -629,10 +663,15 @@ lemma deMorgan4: ∀ (p q : Prop), ¬ (p ∧ q) → (¬ p ∨ ¬ q)
   right,
   have h1 := p_and_q_implies_q_with p q,
   have h2 := disjunction_right p q,
-  intro h3,
+  rw h1 at h2,
+  intro h3, 
+  have h6 := classical.em q,
+  have h7 := classical.em p,
   have h4 := h2 h3,
-  have h5 := modus_ponens p q,
-  
+  have h5 := modus_ponens_with_implications (p ∨ ¬ p) false h7,
+  have h10 := not_p_and_not_p p,
+  dunfold not at h10,
+  have h9 := classical.em,
   
 end
 
