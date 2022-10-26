@@ -86,5 +86,32 @@ end
 theorem or_absorb_and: ∀ P Q : Prop, P ∨ (P ∧ Q) ↔ P :=
 -- ANSWER:
 begin
-    intros,
+  intros,
+  split,
+  {
+    intro h,
+    cases h,
+    {
+      assumption
+    },
+    {
+      cases h,{
+        assumption
+      }
+    }
+  },
+  {
+    intro h,
+    left,
+    assumption
+  }
 end
+
+
+theorem p_and_q_implies_p_and_q: ∀ P Q : Prop, P ∧ Q → P ∧ Q :=
+begin
+  intros,
+  assumption
+end
+
+
