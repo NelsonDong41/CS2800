@@ -447,7 +447,13 @@ theorem f1_equals_f2:
   sorry
  end
 
-example : ¬ (f1 tt ff ff) = (f2 tt ff ff) := begin dunfold f1, dunfold f2, end
+example : (f1 tt ff ff) ≠  (f2 tt ff ff) :=
+ begin
+  intros,
+  dunfold f1,
+  dunfold f2,
+  contradiction,
+end
 
 
 
