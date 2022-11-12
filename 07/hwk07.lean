@@ -56,7 +56,29 @@ is the claim below true? if so prove it and answer the question: is your proof c
 -/
 theorem p_iff_false: ∀ P : Prop, (P ↔ false) ↔ ¬ P 
 -- ANSWER: 
-... 
+:= begin
+  intros,
+  split,
+  {
+    intro h,
+    cases h,
+    {
+      dunfold not,
+      assumption
+    }
+  },
+  {
+    intro h,
+    split,
+    {
+      assumption
+    },
+    {
+      intro h1,
+      trivial,
+    }
+  }
+end
 
 
 /- HWK07-02: 
@@ -64,7 +86,9 @@ is the claim below true? if so prove it and answer the question: is your proof c
 -/
 theorem p_and_not_p_eq_false: ∀ p : Prop, (p ∧ ¬ p) ↔ false 
 -- ANSWER: 
-... 
+:= begin
+
+end
 
 
 
@@ -230,7 +254,9 @@ hint: use listeq:
 example: ∀ (x y z : ℕ) (L : list ℕ) (p : Prop), x :: y :: L = [z] → p 
 := begin
 -- ANSWER: 
-    ... 
+  intros x y z,
+  intros L P h,
+  cases h,
 end
 
 
@@ -262,8 +288,24 @@ did you have to use classical.em?
 if you think one is strictly stronger than the other, prove the implication that holds, and provide counterexample for the implication that does not hold. to provide a counterexample, you will have to provide definitions for predicates P and Q, and example nats that make the formulas above true or false! (c.f. 11-code.lean, "(SEMANTIC) TRUTH")
 -/
 
+
 -- ANSWER:
-... 
+theorem Q13 : ∀ P Q, (formula2 P Q) -> (formula1 P Q) :=
+begin
+  intros p q,
+  intros h,
+  rw formula1,
+  rw formula2 at h,
+  intros h1,
+  intros h2,
+  have h3 := h h2,
+  have h4 := h1 h2,
+  have h5 := h3 h4,
+  assumption,
+end
+
+-- formula 1 = F
+-- fotmula 2 = T
 
 
 

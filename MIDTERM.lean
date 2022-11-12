@@ -113,17 +113,10 @@ theorem not_p_implies_xor: forall p q : Prop, (not p) -> ((xor p q) <-> q)
     intro h1,
     cases h1,
     {
-      have h2 := classical.em q,
-      cases h2,
+      cases h1,
       {
-        assumption
-      },
-      {
-        cases h1,
-        {
-          contradiction
-        }
-      }
+        contradiction
+      }  
     },
     {
       cases h1,
@@ -133,43 +126,12 @@ theorem not_p_implies_xor: forall p q : Prop, (not p) -> ((xor p q) <-> q)
     }
   },
   {
-    intro h2,
+    intros h1,
     dunfold xor,
     {
       right,
-      split,
-      repeat {
-        assumption
-      }
-    }
-  }
-end
-
-
-lemma not_true_false: (not true) <-> false
-:= begin
-  split,
-  {
-    intros h,
-    dunfold not at h,
-    have h1 : true := trivial,
-    have h2 := h h1,
-    assumption
-  },
-  {
-    trivial
-  }
-end
-
-theorem not_xor_p_p: forall P : Prop, not (xor P P)
-:= begin
-  intros,
-  intro h,
-  cases h,
-  repeat {
-    cases h,
-    {
-      contradiction
+      have h2 : q ∧ ¬ p := begin split, assumption, assumption end,
+      assumption
     }
   }
 end
