@@ -358,3 +358,23 @@ it now becomes apparent that the forall quantifier ∀ can be interpreted as an 
 FOOD FOR THOUGHT: if the ∀ quantifier is essentially an implication, then what do you think the ∃ (exists) quantifier essentially is?
 -/
 
+lemma lem : ∀ L1 L2 :list ℕ , len(app L1 L2) = len(app L2 L1) :=begin sorry end
+
+
+theorem test : ∀ (L : list nat) (x y : nat), len (app L [x,y]) = plus 2 (len L):= begin
+  intros,
+  cases L with z L1,
+  {
+    trivial,
+  },
+  {
+    dunfold app,
+    dunfold len,
+    rw lem L1 [x,y],
+    dunfold app,
+    dunfold len,
+    dunfold plus,
+    refl,
+
+  }
+end
