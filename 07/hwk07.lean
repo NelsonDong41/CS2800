@@ -2,7 +2,7 @@
 -- COPYRIGHT 2022 STAVROS TRIPAKIS -- DO NOT DISTRIBUTE!
 
 import .ourlibrary11 
-import .ourlibrary12 
+import .ourlibrary12
 
 
 -- CS 2800 Fall 2022, HOMEWORK 7
@@ -56,29 +56,32 @@ is the claim below true? if so prove it and answer the question: is your proof c
 -/
 theorem p_iff_false: ∀ P : Prop, (P ↔ false) ↔ ¬ P 
 -- ANSWER: 
-:= begin
+ := begin
   intros,
   split,
   {
     intro h,
-    cases h,
+    intro h1,
+    cases h with h2 h3,
     {
-      dunfold not,
-      assumption
+      have h4 := h2 h1,
+      trivial,
     }
   },
   {
     intro h,
     split,
     {
+      dunfold not at h,
       assumption
     },
     {
+      dunfold not at h,
       intro h1,
       trivial,
     }
   }
-end
+ end
 
 
 /- HWK07-02: 
@@ -87,7 +90,19 @@ is the claim below true? if so prove it and answer the question: is your proof c
 theorem p_and_not_p_eq_false: ∀ p : Prop, (p ∧ ¬ p) ↔ false 
 -- ANSWER: 
 := begin
-
+  intros,
+  split,
+  {
+    intro h,
+    cases h with h1 h2,
+    {
+      contradiction,
+    }
+  },
+  {
+    intro,
+    trivial,
+  }
 end
 
 
@@ -97,7 +112,58 @@ is the claim below true? if so prove it and answer the question: is your proof c
 -/
 lemma or_absorb_and_or: ∀ p q : Prop, p ∨ (¬ p ∧ q) ↔ (p ∨ q) 
 -- ANSWER: 
-... 
+:= begin
+  intros,
+  split,
+  {
+    intro h,
+    cases h,
+    {
+      left,
+      assumption
+    },
+    {
+      have h1 := classical.em p,
+      cases h1,
+      {
+        left,
+        assumption
+      },
+      {
+        cases h with h2 h3,
+        {
+          right,
+          assumption
+        },
+      }
+    }
+  },
+  {
+    intro h,
+    have h1 := classical.em p,
+    cases h1,
+    {
+      left,
+      assumption
+    },
+    {
+      right,
+      split,
+      {
+        assumption
+      },
+      {
+        cases h,
+        {
+          contradiction
+        },
+        {
+          assumption
+        }
+      }
+    }
+  }
+end
 
 
 /- HWK07-04: 
@@ -105,7 +171,41 @@ is the claim below true? if so prove it and answer the question: is your proof c
 -/
 lemma redundant_and: ∀ p q : Prop, (p ∨ q) ∧ (p ∨ ¬ q) ↔ p 
 -- ANSWER: 
-... 
+:= begin
+  intros,
+  split,
+  {
+    intro h,
+    cases h with hl hr, 
+    {
+      cases hl,
+      {
+        assumption,
+      },
+      {
+        cases hr,
+        {
+          assumption
+        },
+        {
+          contradiction
+        }
+      }
+    }
+  },
+  {
+    intro h,
+    split,
+    {
+      left,
+      assumption
+    },
+    {
+      left,
+      assumption
+    }
+  }
+end
 
 
 
@@ -114,7 +214,29 @@ is the claim below true? if so prove it and answer the question: is your proof c
 -/
 lemma not_p_implies_p: ∀ P : Prop, (¬ P → P) ↔ P 
 -- ANSWER: 
-... 
+:= begin
+  intros,
+  split,
+  {
+    intros h,
+    dunfold not at h,
+    have h1 := classical.em P,
+    cases h1,
+    {
+      assumption
+    },
+    {
+      dunfold not at h1,
+      have h2 := h h1,
+      assumption
+    }
+  },
+  {
+    intro h,
+    intro h1,
+    assumption
+  }
+end
 
 
 
@@ -123,7 +245,36 @@ is the claim below true? if so prove it and answer the question: is your proof c
 -/
 lemma or_if: ∀ (P Q : Prop), P ∨ Q ↔ (¬ P → Q) 
 -- ANSWER: 
-... 
+:= begin
+  intros,
+  split,
+  {
+    intros h h1,
+    cases h,
+    {
+      contradiction
+    },
+    {
+      assumption
+    }
+  },
+  {
+    intro h,
+    dunfold not at h,
+    have h1 := classical.em P,
+    cases h1,
+    {
+      left,
+      assumption
+    },
+    {
+      dunfold not at h1,
+      have h2 := h h1,
+      right,
+      assumption
+    }
+  }
+end
 
 
 /- HWK07-07: 
@@ -131,7 +282,27 @@ is the claim below true? if so prove it and answer the question: is your proof c
 -/
 theorem exportation: ∀ A B C : Prop, (A → B → C) ↔ (A ∧ B → C) 
 -- ANSWER:
-... 
+:= begin
+  intros,
+  split,
+  {
+    intro h,
+    intro h1,
+    cases h1,
+    {
+      have h2 := h h1_left h1_right,
+      assumption
+    }
+  },
+  {
+    intro h,
+    intro h1,
+    intro h2,
+    have h3 : A ∧ B := begin split, assumption, assumption end,
+    have h4 := h h3,
+    assumption
+  }
+end
 
 
 
@@ -146,8 +317,68 @@ if you think they are equivalent, prove it, using Props. is your proof construct
 if you think one is strictly stronger than the other, prove the implication that holds, and provide counterexample for the implication that does not hold. 
 -/
 -- ANSWER: 
-... 
-
+theorem checking: ∀ A B C : Prop, (A → B) ∧ (¬A → C) ↔ (A ∧ B) ∨ (¬A ∧ C) 
+:= begin
+  intros,
+  split,
+  {
+    intro h,
+    cases h with h1 h2,
+    {
+      have h3 := classical.em A,
+      cases h3,
+      {
+        have h4 := h1 h3,
+        left,
+        have h4 : A ∧ B := begin split, assumption, assumption end,
+        assumption
+      },
+      {
+        have h4 := h2 h3,
+        right,
+        have h4 : ¬ A ∧ C := begin split, assumption, assumption end,
+        assumption
+      }
+    }
+  },
+  {
+    intro h,
+    split,
+    {
+      cases h,
+      {
+        cases h,
+        {
+          intro,
+          assumption
+        }
+      },
+      {
+        cases h,
+        {
+          intro,
+          contradiction
+        }
+      }
+    },
+    {
+      intro h1,
+      cases h,
+      {
+        cases h,
+        {
+          contradiction
+        }
+      },
+      {
+        cases h,
+        {
+          assumption
+        }
+      }
+    }
+  }
+end
 
 
 
@@ -169,7 +400,37 @@ you are NOT allowed to use neither classical.em, nor classical.by_contradiction!
 theorem contra_implies_em: contra → law_excluded_middle
 := begin 
 -- ANSWER:
-   ... 
+  rw contra,
+  rw law_excluded_middle,
+  intro h,
+  have h1 : ∀ p, ((p → false) → false) → p ↔ (p → false) → (p → false) :=
+  begin
+    intros,
+    split,
+    {
+      intros h1 h2 h3,
+      have h4 := h2 h3,
+      assumption
+    },
+    {
+      intros h1 h2,
+      have h3 := h p,
+      dunfold not at h3,
+      have h4 := h3 h2,
+      assumption      
+    }
+  end,
+  intro,
+  have h2 := h1 p,
+  have h3 := h p,
+  dunfold not at h3,
+  cases h2 with h2L h2R,
+  {
+    have h4 := h2L h3,
+    right,
+    intro h5,
+
+  }  
 end
 
 /- HWK07-09-2: 
@@ -182,7 +443,14 @@ explain the difference between not_not_p_implies_p_implies_p_or_not_p and contra
 -/
 -- ANSWER:
 
+theorem not_not_p_implies_p_implies_p_or_not_p: 
+  ∀ p : Prop, (¬ ¬ p → p) → (p ∨ ¬ p) 
+  := begin
+    intro,
+    intro h,
+    dunfold not at h,
 
+  end
 
 
 /- HWK07-10: 
@@ -193,7 +461,10 @@ NOTE: for this problem we want you to learn to use the _rewrite_ tactic. there i
 theorem iff_trans: ∀ A B C : Prop, (A ↔ B) ∧ (B ↔ C) → (A ↔ C) 
 := begin
 -- ANSWER:
-    ... 
+  intros A B C h,
+  cases h with h1 h2,
+  rw <- h1 at h2,
+  assumption
 end
 
 
@@ -212,7 +483,7 @@ for this problem, you can prove the result in any way you want. in particular, y
 theorem not_xor: ∀ (p q : Prop), (¬ xor p q) ↔ ((p ∧ q) ∨ (¬ p ∧ ¬ q))
 := begin
 -- ANSWER:
-  ... 
+  
 end
 
 
@@ -237,7 +508,12 @@ theorem not_xor_rw: ∀ (p q : Prop), (¬ xor p q) ↔ ((p ∧ q) ∨ (¬ p ∧ 
   unfold xor,
 -- use only the "rw" tactic (as many times as you want) in the rest of the proof. 
 -- ANSWER: 
-  ... 
+  split,
+  {
+    intro h,
+    dunfold not at h,
+
+  } 
 end
 
 
@@ -254,9 +530,7 @@ hint: use listeq:
 example: ∀ (x y z : ℕ) (L : list ℕ) (p : Prop), x :: y :: L = [z] → p 
 := begin
 -- ANSWER: 
-  intros x y z,
-  intros L P h,
-  cases h,
+    ... 
 end
 
 
@@ -288,25 +562,29 @@ did you have to use classical.em?
 if you think one is strictly stronger than the other, prove the implication that holds, and provide counterexample for the implication that does not hold. to provide a counterexample, you will have to provide definitions for predicates P and Q, and example nats that make the formulas above true or false! (c.f. 11-code.lean, "(SEMANTIC) TRUTH")
 -/
 
-
 -- ANSWER:
+---
 theorem Q13 : ∀ P Q, (formula2 P Q) -> (formula1 P Q) :=
 begin
-  intros p q,
-  intros h,
+  intros P Q h,
+  dunfold formula2 at h,
   rw formula1,
-  rw formula2 at h,
-  intros h1,
-  intros h2,
+  intros h1 h2,
   have h3 := h h2,
   have h4 := h1 h2,
   have h5 := h3 h4,
-  assumption,
+  assumption
 end
 
--- formula 1 = F
--- fotmula 2 = T
+def P : ℕ → Prop
+  | nat.zero := false
+  | succ := true
 
+def Q : ℕ → Prop
+  | nat.zero := true
+  | succ := false
+
+#check Q13 (P) (Q) formula2
 
 
 end a_bit_of_first_order_logic
@@ -320,7 +598,16 @@ prove the following:
 lemma plus_one_succ: ∀ x : ℕ, plus x 1 = nat.succ x 
 := begin
 -- ANSWER:
-    ... 
+    intro,
+    induction x,
+    {
+      rw plus,
+    },
+    {
+      rw plus,
+      rw succeq,
+      exact x_ih
+    }
 end
 
 
@@ -332,7 +619,22 @@ theorem app_associative: ∀ L1 L2 L3 : list ℕ,
     app L1 (app L2 L3) = app (app L1 L2) L3 
 := begin
 -- ANSWER: 
-    ... 
+  intros,
+  induction L1,
+  {
+    cases L2,
+    repeat {
+      cases L3,
+      repeat {
+        dunfold app,
+        refl
+      }
+    }
+  },
+  {
+    dunfold app,
+    rw L1_ih,
+  }
 end
 
 
@@ -350,7 +652,15 @@ def minus : ℕ → ℕ → ℕ
 -/
 theorem minus_x_x: ∀ x : ℕ, minus x x = 0 
 := begin
-    ... 
+    intros,
+    induction x,
+    {
+      rw minus,
+    },
+    {
+      rw minus,
+      assumption
+    }
 end
 
 
